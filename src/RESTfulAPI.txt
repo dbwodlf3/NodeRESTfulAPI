@@ -1,15 +1,15 @@
 # GET 요청
-GET api/user/<condition>
-GET api/book/<condition>
+GET api/user/<username>
+GET api/book/<isbn>
 
 # POST 요청
 POST api/user
 POST api/book
 
 # PUT 요청
-PUT api/user/<condition>
-PUT api/book/<condition>
+PUT api/user/<username>
+PUT api/book/<isbn>
 
 # DELETE 요청
-DELETE api/user/<condition>
-DELETE api/book/<condition>
+DELETE api/user/<username>
+DELETE api/book/<isbn>

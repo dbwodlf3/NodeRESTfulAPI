@@ -16,6 +16,9 @@ CREATE TABLE user(
 CREATE TABLE book(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     bookName VARCHAR(30) NOT NULL,
-    ISBN VARCHAR(18) UNIQUE NOT NULL,
+    ISBN BIGINT(18) UNIQUE NOT NULL,
     publicationDate DATE
 )
+
+# 나중에 추가해야할 것.
+userName 같은 경우에는 특수문자 불가, 오로지 영어 대소문자와 숫자로만 저장할 수 있게끔 사용자 정의 제약사항 추가해야함.
