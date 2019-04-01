@@ -10,7 +10,12 @@ var dbConnection = mysql.createConnection({
 
 dbConnection.connect((err)=>{
     if(err){console.log("Connecting Failed.");throw err;}
-    console.log("Connecting Success.")
+    console.log("connected")
+})
+
+dbConnection.query('select current_timestamp', (err, result,)=>{
+    if(err) throw err;
+    console.log(result)
 })
 
 dbConnection.end()

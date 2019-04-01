@@ -14,3 +14,10 @@ dbConnection.connect((err)=>{
 })
 
 dbConnection.end()
+
+console.log(dbConnection)
+console.log("한번 끊어진 연결로 재연결은 불가.. 다시 만들어줘야함..")
+
+dbConnection.connect((err)=>{
+    if(error){console.log("Error"); throw err;}
+})
