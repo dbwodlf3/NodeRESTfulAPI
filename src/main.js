@@ -48,7 +48,7 @@ function RESTfulAPIRouting(req, res, next){
 //API Function
 function RESTfulGET(req, res, userPath)
 {   
-    let parameter = userPath.split("/")[3]
+    let parameter = getParameter(userPath)
     myQuery(`SELECT * FROM user where username=\'${parameter}\'`, (result)=>
     {
         res.writeHead(200,{"Content-Type":"text/plain"});
@@ -59,17 +59,36 @@ function RESTfulGET(req, res, userPath)
 
 function RESTfulPOST(req, res, url)
 {
-
+    let parameter = getParameter(userPath)
+    let sql = `SELECT * FROM user where username=\'${parameter}\'`
+    myQuery( sql , (result)=>
+    {
+        res.writeHead(200,{"Content-Type":"text/plain"});
+        res.write(JSON.stringify(result[0]))
+        res.end();
+    })
 }
 
 function RESTfulPUT(req, res, url)
 {
-
+    let parameter = getParameter(userPath)
+    myQuery(`SELECT * FROM user where username=\'${parameter}\'`, (result)=>
+    {
+        res.writeHead(200,{"Content-Type":"text/plain"});
+        res.write(JSON.stringify(result[0]))
+        res.end();
+    })
 }
 
 function RESTfulDELETE(req, res, url)
 {
-
+    let parameter = getParameter(userPath)
+    myQuery(`SELECT * FROM user where username=\'${parameter}\'`, (result)=>
+    {
+        res.writeHead(200,{"Content-Type":"text/plain"});
+        res.write(JSON.stringify(result[0]))
+        res.end();
+    })
 }
 
 
@@ -92,12 +111,17 @@ function myQuery(sql, callback){
         if(err) throw err;
     })
 
-    let result2 = DBServer.query(sql, (err, result)=>{
-        if(err) throw err;
-        callback(result)
-        DBServer.end()
-        return result
+    DBServer.query(sql, (err, result)=>{
+        if(err){throw err}
+        else{
+            callback(result)
+            DBServer.end()
+        }
     })
+}
+
+function getParameter(url){
+    return url.split("/")[3]
 }
 
 
