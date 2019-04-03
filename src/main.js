@@ -51,8 +51,13 @@ function RESTfulGET(req, res, userPath)
     let parameter = getParameter(userPath)
     myQuery(`SELECT * FROM user where username=\'${parameter}\'`, (result)=>
     {
+        try{
         res.writeHead(200,{"Content-Type":"text/plain"});
         res.write(JSON.stringify(result[0]))
+        }
+        catch(err){
+            res.write("a error raised.")
+        }
         res.end();
     })
 }
@@ -122,6 +127,34 @@ function myQuery(sql, callback){
 
 function getParameter(url){
     return url.split("/")[3]
+}
+
+
+//API Helper Function
+function err500(req, res){
+    res.writeHead(500)
+    res.wrte("Interanl Server Error")
+}
+
+function myQuery(sql, callback){
+    let DBServer = mysql.createConnection({
+        host: "localhost",
+        user: "user",
+        password: "user",
+        database: "testDB",
+        port: 3306
+    })
+
+    DBServer.connect((err)=>{
+        if(err) throw err;
+    })
+
+    let result2 = DBServer.query(sql, (err, result)=>{
+        if(err){throw err; return 1};
+        callback(result)
+        DBServer.end()
+        return result
+    })
 }
 
 
