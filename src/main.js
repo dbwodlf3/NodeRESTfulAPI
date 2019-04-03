@@ -51,8 +51,13 @@ function RESTfulGET(req, res, userPath)
     let parameter = userPath.split("/")[3]
     myQuery(`SELECT * FROM user where username=\'${parameter}\'`, (result)=>
     {
+        try{
         res.writeHead(200,{"Content-Type":"text/plain"});
         res.write(JSON.stringify(result[0]))
+        }
+        catch(err){
+            res.write("Query를 했는데, 그 결과의 내용물이 JSON이 아니었기에, JSON 텍스트화 함수를 사용하여 오류가 발생했습니다.")
+        }
         res.end();
     })
 }
@@ -93,7 +98,7 @@ function myQuery(sql, callback){
     })
 
     let result2 = DBServer.query(sql, (err, result)=>{
-        if(err) throw err;
+        if(err){throw err; return 1};
         callback(result)
         DBServer.end()
         return result
