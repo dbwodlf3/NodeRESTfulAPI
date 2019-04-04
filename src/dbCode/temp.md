@@ -1,3 +1,4 @@
+# DB 서버에서 수행한 명령어들..
 CREATE USER 'user'@'%' IDENTIFIED BY 'user'
 
 CREATE DATABASE testDB DEFAULT CHARSET UTF8;
@@ -30,9 +31,9 @@ INSERT INTO book(bookName, ISBN, publicationDate) VALUES("bookName", 12345678901
 //유저 이름을 기준으로 삭제합니다.
 DELETE from user where userName = "user"
 
-#데이터 업데이트 하기 PUT
+# 데이터 업데이트 하기 PUT
 //유저 이름을 기준으로 업데이트 합니다.
 UPDATE user SET email = "user@user.com", password = password("user2") WHERE userName = "user"
 
-#데이터 쿼리 하기 GET
+# 데이터 쿼리 하기 GET
 SELECT * FROM user WHERE userName="user"

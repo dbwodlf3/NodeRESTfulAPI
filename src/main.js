@@ -86,6 +86,7 @@ function RESTfulPOST(req, res, url)
 function RESTfulPUT(req, res, url)
 {
     let body = []
+    let parameter = [getParameter(url, 2), getParameter(url, 3)]
     req.on("data", (chunk)=>{ body.push(chunk)}).on('end', ()=>{
         try{body = JSON.parse(Buffer.concat(body).toString("utf-8"))}catch{}
         sql = `temp`;
