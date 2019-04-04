@@ -16,13 +16,13 @@ function test($URI, $Method = "GET", $Header = @{"HTTP"="1.1"}, $Body = @{}, $Ti
 #variables
 $ComputerHost = "http://localhost:8000"
 $BodyPOST = @"
-{ "userName": "user2", "password": "user", "email":"user@user"}
+{ "userName": "user", "password": "user", "email":"user@user"}
 "@
 
 #Test Cases
 write-Host
 test $ComputerHost;
-test ($ComputerHost+"/api/user/") -Method "DELETE";
-test ($ComputerHost+"/api/user/") -Method "POST" -Body $BodyPOST -Header @{"HTTP"="1.1";"Content-Type"="application/json"}
-test ($ComputerHost+"/api/user/") -Method "PUT";
-test ($ComputerHost+"/api/user/test") -Method "GET";
+test ($ComputerHost+"/api/user/user") -Method "DELETE";
+#test ($ComputerHost+"/api/user") -Method "POST" -Body $BodyPOST -Header @{"HTTP"="1.1";"Content-Type"="application/json"}
+test ($ComputerHost+"/api/user") -Method "PUT";
+test ($ComputerHost+"/api/user/user") -Method "GET";
