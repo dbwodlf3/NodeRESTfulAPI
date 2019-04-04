@@ -52,7 +52,7 @@ function RESTfulGET(req, res, userPath)
     myQuery(`SELECT * FROM user where username=\'${parameter}\'`, (result)=>
     {
         try{
-        res.writeHead(200,{"Content-Type":"text/plain"})
+        res.writeHead(200,{"Content-Type":"application/json"})
         res.write(JSON.stringify(result[0]))
         res.end()
         }
@@ -64,7 +64,23 @@ function RESTfulGET(req, res, userPath)
 
 function RESTfulPOST(req, res, url)
 {
-    err500(req,res)
+    try{
+        let body = []
+        req.on("data", (chunk)=>{
+            body.push(chunk)
+        }).on('end', ()=> {
+            body = JSON.parse(Buffer.concat(body).toString("utf-8"))
+            let sql = `INSERT INTO user(userName, password, email, create_date) VALUES(${body.userName}, password(${body.password}), ${body.email});`
+
+            myQuery(sql, (result)=>{
+                res.writeHead(200,{"Content-Type":"application/json"})
+                res.write("Good.")
+                res.end()
+            })
+        })
+    }catch(err){
+        err500(req,res)
+    }
 }
 
 function RESTfulPUT(req, res, url)
@@ -99,7 +115,7 @@ function myQuery(sql, callback){
     })
 
     DBServer.query(sql, (err, result)=>{
-        if(err){throw err}
+        if(err){console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ㅆㅃ");throw err}
         else{
             callback(result)
             DBServer.end()
@@ -132,8 +148,8 @@ function myQuery(sql, callback){
         if(err) throw err;
     })
 
-    let result2 = DBServer.query(sql, (err, result)=>{
-        if(err){throw err; return 1};
+    DBServer.query(sql, (err, result)=>{
+        if(err){console.log("여기서 에러 발생."); throw err;}
         callback(result)
         DBServer.end()
         return result
