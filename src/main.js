@@ -80,7 +80,6 @@ function RESTfulPOST(req, res, url)
                 }
             })
         })
-
 }
 
 function RESTfulPUT(req, res, url)
@@ -89,10 +88,21 @@ function RESTfulPUT(req, res, url)
     let parameter = [getParameter(url, 2), getParameter(url, 3)]
     req.on("data", (chunk)=>{ body.push(chunk)}).on('end', ()=>{
         try{body = JSON.parse(Buffer.concat(body).toString("utf-8"))}catch{}
-        sql = `temp`;
+
+        sql = `UPDATE ${parameter[0]} SET `
+        let jsonKeys = Object.keys(body)
+        for(let i=0;i<jsonKeys.length;i++){
+            if(i==jsonKeys.length-1){sql = sql + `${jsonKeys[i]} = \"${body[jsonKeys[i]]}\" `;break;} // 개선의 여지가 무척이나 많은 코드...
+            sql = sql + `${jsonKeys[i]} = \"${body[jsonKeys[i]]}\", `
+        }
+        sql = sql + `WHERE  userName= \"${parameter[1]}\"`; //개선의 여지가 있는 코드.
+
         myQuery(sql, (err, result)=>{
-            if(err){err500(req,res);}
+            if(err){err500(req,res);console.log(sql); throw err;}
             else{
+                res.writeHead(200, {"Content-Type":"text/plain"})
+                res.write("Updated.")
+                res.end()
             }
         })
     })
@@ -101,12 +111,11 @@ function RESTfulPUT(req, res, url)
 function RESTfulDELETE(req, res, url)
 {
     let parameter = [getParameter(url, 2), getParameter(url, 3)]
-    console.log(parameter)
-    let sql = `DELETE from ${parameter[0]} where userName = "${parameter[1]}"`
+    let sql = `DELETE from ${parameter[0]} where userName = "${parameter[1]}"` //개선의 여지가 있는 코드
     myQuery(sql, (err, result)=>{
         if(err)err500(req,res);
         else{
-            res.writeHead(200, {"Content-Type":"application/json"})
+            res.writeHead(200, {"Content-Type":"text/plain"})
             res.write("Deleted")
             res.end()
         }

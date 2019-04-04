@@ -26,13 +26,17 @@ userName 같은 경우에는 특수문자 불가, 오로지 영어 대소문자�
 
 # 데이터 추가하기. POST
 INSERT INTO user(userName, password, email, create_date) VALUES('user', password('user'), 'user@test.com', CURRENT_TIMESTAMP);
+
 INSERT INTO book(bookName, ISBN, publicationDate) VALUES("bookName", 123456789012345678, CURRENT_DATE);
+
 # 데이터 삭제하기. DELETE
 //유저 이름을 기준으로 삭제합니다.
+
 DELETE from user where userName = "user"
 
 # 데이터 업데이트 하기 PUT
 //유저 이름을 기준으로 업데이트 합니다.
+
 UPDATE user SET email = "user@user.com", password = password("user2") WHERE userName = "user"
 
 # 데이터 쿼리 하기 GET

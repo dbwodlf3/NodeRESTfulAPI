@@ -18,11 +18,14 @@ $ComputerHost = "http://localhost:8000"
 $BodyPOST = @"
 { "userName": "user", "password": "user", "email":"user@user"}
 "@
+$BodyPUT = @"
+{ "email":"user@changed.com", "password":"1234"}
+"@
 
 #Test Cases
 write-Host
 test $ComputerHost;
 test ($ComputerHost+"/api/user/user") -Method "DELETE";
-#test ($ComputerHost+"/api/user") -Method "POST" -Body $BodyPOST -Header @{"HTTP"="1.1";"Content-Type"="application/json"}
-test ($ComputerHost+"/api/user") -Method "PUT";
+test ($ComputerHost+"/api/user") -Method "POST" -Body $BodyPOST -Header @{"HTTP"="1.1";"Content-Type"="application/json"}
+test ($ComputerHost+"/api/user/user") -Method "PUT" -Body $BodyPUT;
 test ($ComputerHost+"/api/user/user") -Method "GET";
