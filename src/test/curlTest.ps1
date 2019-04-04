@@ -16,7 +16,7 @@ function test($URI, $Method = "GET", $Header = @{"HTTP"="1.1"}, $Body = @{}, $Ti
 #variables
 $ComputerHost = "http://localhost:8000"
 $BodyPOST = @"
-{ "userName": "user", "password": "user", "email":"user@user"}
+{ "userName": "user2", "password": "user", "email":"user@user"}
 "@
 
 #Test Cases

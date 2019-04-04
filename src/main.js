@@ -66,11 +66,9 @@ function RESTfulPOST(req, res, url)
 {
 
         let body = []
-        req.on("data", (chunk)=>{
-            body.push(chunk)
-        }).on('end', ()=> {
-            body = JSON.parse(Buffer.concat(body).toString("utf-8"))
-            let sql = `INSERT INTO user(userName, password, email, create_date) VALUES(${body.userName}, password(${body.password}), ${body.email});`
+        req.on("data", (chunk)=>{body.push(chunk)}).on('end', ()=> {
+            try{body = JSON.parse(Buffer.concat(body).toString("utf-8"))}catch{}
+            let sql = `INSERT INTO user(userName, password, email, create_date) VALUES(\"${body.userName}\", password(\"${body.password}\"), \"${body.email}\", current_date);`
 
             myQuery(sql, (err, result)=>{
                 if(err){err500(req,res);}
@@ -87,7 +85,17 @@ function RESTfulPOST(req, res, url)
 
 function RESTfulPUT(req, res, url)
 {
-    err500(req,res)
+    let body = []
+    req.on("data", (chunk)=>{ body.push(chunk)}).on('end', ()=>{
+        try{body = JSON.parse(Buffer.concat(body).toString("utf-8"))}catch{}
+        sql = `temp`;
+        myQuery(sql, (err, result)=>{
+            if(err){err500(req,res);}
+            else{
+
+            }
+        })
+    })
 }
 
 function RESTfulDELETE(req, res, url)
