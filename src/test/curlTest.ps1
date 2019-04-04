@@ -25,4 +25,4 @@ test $ComputerHost;
 test ($ComputerHost+"/api/user/") -Method "DELETE";
 test ($ComputerHost+"/api/user/") -Method "POST" -Body $BodyPOST -Header @{"HTTP"="1.1";"Content-Type"="application/json"}
 test ($ComputerHost+"/api/user/") -Method "PUT";
-test ($ComputerHost+"/api/user/") -Method "GET";
+test ($ComputerHost+"/api/user/test") -Method "GET";

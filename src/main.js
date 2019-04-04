@@ -49,7 +49,7 @@ function RESTfulAPIRouting(req, res, next){
 function RESTfulGET(req, res, userPath)
 {   
     let parameter = getParameter(userPath)
-    myQuery(`SELECT * FROM user where username=\'${parameter}\'`, (result)=>
+    myQuery(`SELECT * FROM user where username=\'${parameter}\'`, (err, result)=>
     {
         try{
         res.writeHead(200,{"Content-Type":"application/json"})
@@ -64,7 +64,7 @@ function RESTfulGET(req, res, userPath)
 
 function RESTfulPOST(req, res, url)
 {
-    try{
+
         let body = []
         req.on("data", (chunk)=>{
             body.push(chunk)
@@ -72,15 +72,17 @@ function RESTfulPOST(req, res, url)
             body = JSON.parse(Buffer.concat(body).toString("utf-8"))
             let sql = `INSERT INTO user(userName, password, email, create_date) VALUES(${body.userName}, password(${body.password}), ${body.email});`
 
-            myQuery(sql, (result)=>{
+            myQuery(sql, (err, result)=>{
+                if(err){err500(req,res);}
+                else{
                 res.writeHead(200,{"Content-Type":"application/json"})
                 res.write("Good.")
                 res.end()
+                }
             })
+            
         })
-    }catch(err){
-        err500(req,res)
-    }
+
 }
 
 function RESTfulPUT(req, res, url)
@@ -91,40 +93,6 @@ function RESTfulPUT(req, res, url)
 function RESTfulDELETE(req, res, url)
 {
     err500(req,res)
-}
-
-
-//API Helper Function
-function err500(req, res){
-    res.writeHead(500)
-    res.wrte("Interanl Server Error")
-    res.end()
-}
-
-function myQuery(sql, callback){
-    let DBServer = mysql.createConnection({
-        host: "localhost",
-        user: "user",
-        password: "user",
-        database: "testDB",
-        port: 3306
-    })
-
-    DBServer.connect((err)=>{
-        if(err) throw err;
-    })
-
-    DBServer.query(sql, (err, result)=>{
-        if(err){console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ㅆㅃ");throw err}
-        else{
-            callback(result)
-            DBServer.end()
-        }
-    })
-}
-
-function getParameter(url){
-    return url.split("/")[3]
 }
 
 
@@ -149,11 +117,16 @@ function myQuery(sql, callback){
     })
 
     DBServer.query(sql, (err, result)=>{
-        if(err){console.log("여기서 에러 발생."); throw err;}
-        callback(result)
-        DBServer.end()
-        return result
+            if(err){callback(err, result)}
+            else{
+                callback(err, result)
+            }
+            DBServer.end()
     })
+}
+
+function getParameter(url){
+    return url.split("/")[3]
 }
 
 
