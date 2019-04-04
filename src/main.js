@@ -52,48 +52,29 @@ function RESTfulGET(req, res, userPath)
     myQuery(`SELECT * FROM user where username=\'${parameter}\'`, (result)=>
     {
         try{
-        res.writeHead(200,{"Content-Type":"text/plain"});
+        res.writeHead(200,{"Content-Type":"text/plain"})
         res.write(JSON.stringify(result[0]))
+        res.end()
         }
         catch(err){
-            res.write("a error raised.")
+            err500(req, res)
         }
-        res.end();
     })
 }
 
 function RESTfulPOST(req, res, url)
 {
-    let parameter = getParameter(userPath)
-    let sql = `SELECT * FROM user where username=\'${parameter}\'`
-    myQuery( sql , (result)=>
-    {
-        res.writeHead(200,{"Content-Type":"text/plain"});
-        res.write(JSON.stringify(result[0]))
-        res.end();
-    })
+    err500(req,res)
 }
 
 function RESTfulPUT(req, res, url)
 {
-    let parameter = getParameter(userPath)
-    myQuery(`SELECT * FROM user where username=\'${parameter}\'`, (result)=>
-    {
-        res.writeHead(200,{"Content-Type":"text/plain"});
-        res.write(JSON.stringify(result[0]))
-        res.end();
-    })
+    err500(req,res)
 }
 
 function RESTfulDELETE(req, res, url)
 {
-    let parameter = getParameter(userPath)
-    myQuery(`SELECT * FROM user where username=\'${parameter}\'`, (result)=>
-    {
-        res.writeHead(200,{"Content-Type":"text/plain"});
-        res.write(JSON.stringify(result[0]))
-        res.end();
-    })
+    err500(req,res)
 }
 
 
@@ -101,6 +82,7 @@ function RESTfulDELETE(req, res, url)
 function err500(req, res){
     res.writeHead(500)
     res.wrte("Interanl Server Error")
+    res.end()
 }
 
 function myQuery(sql, callback){
@@ -133,7 +115,8 @@ function getParameter(url){
 //API Helper Function
 function err500(req, res){
     res.writeHead(500)
-    res.wrte("Interanl Server Error")
+    res.write("Interanl Server Error")
+    res.end()
 }
 
 function myQuery(sql, callback){
