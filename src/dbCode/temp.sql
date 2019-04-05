@@ -11,14 +11,14 @@ CREATE TABLE user(
     userName VARCHAR(30) UNIQUE NOT NULL,
     password VARCHAR(40) NOT NULL,
     email VARCHAR(60),
-    create_date TIMESTAMP
+    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
 
 CREATE TABLE book(
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     bookName VARCHAR(30) NOT NULL,
     ISBN BIGINT(18) UNIQUE NOT NULL,
-    publicationDate DATE
+    publicationDate DATE DEFAULT CURRENT_DATE
 )
 
 -- # 나중에 추가해야할 것.

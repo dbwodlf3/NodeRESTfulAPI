@@ -69,9 +69,10 @@ function RESTfulPOST(req, res, url)
         let body = []
         let parameter = getParameter(url, 2)
         req.on("data", (chunk)=>{body.push(chunk)}).on('end', ()=> {
-            try{body = JSON.parse(Buffer.concat(body).toString("utf-8"))}catch{}
+            try{body = JSON.parse(Buffer.concat(body).toString("utf-8"))}catch(err){console.log(err)}
             body["table"] = parameter
             let sql = createSQL("INSERT", body)
+            console.log(sql)
             myQuery(sql, (err, result)=>{
                 if(err){err500(req,res);}
                 else{
@@ -112,7 +113,6 @@ function RESTfulDELETE(req, res, url)
     let parameter = [getParameter(url, 2), getParameter(url, 3)]
     let sqlJson = {"table":parameter[0], "condition":(parameter[0]+"Name"), "conditionValue":parameter[1]}
     let sql = createSQL("DELETE", sqlJson)
-    console.log(sql)
     myQuery(sql, (err, result)=>{
         if(err)err500(req,res);
         else{
@@ -181,6 +181,7 @@ function createSQL(command, reqBody){
 }
 
 function forEachSQL(data, option=false){
+    console.log(data)
     let temp = "("
     if(option){
         try{data.forEach((e)=>{temp = temp+ wrapperValue(e) +", ";})}catch{return}
