@@ -5,15 +5,13 @@ Json Object를 보내서 Server 단에서 처리한다.
 Json Object의 양식은 아래와 같이.
 user는
 {
-    table:"user",
-    attributes:["name","password","email"]
-    data:["user", "userPassword", "userEmail"]
+    "attributes":["userName","password","email"]
+    "data":["user", "userPassword", "userEmail"]
 }
 book
 {
-    table:"book",
-    attributes:["bookName","ISBN"]
-    data:["ThisaBook","123456789012345678"]
+    "attributes":["bookName","ISBN"]
+    "data":["ThisaBook","123456789012345678"]
 }
 
 # GET 요청 Read

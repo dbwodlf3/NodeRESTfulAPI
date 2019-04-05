@@ -70,8 +70,10 @@ function RESTfulPOST(req, res, url)
         let parameter = getParameter(url, 2)
         req.on("data", (chunk)=>{body.push(chunk)}).on('end', ()=> {
             try{body = JSON.parse(Buffer.concat(body).toString("utf-8"))}catch{}
-            let sql = `INSERT INTO ${parameter}(userName, password, email, create_date) VALUES(\"${body.userName}\", password(\"${body.password}\"), \"${body.email}\", current_date);`
-
+            body["table"] = parameter
+            console.log(body)
+            let sql = createSQL("INSERT", body)
+            console.log(sql)
             myQuery(sql, (err, result)=>{
                 if(err){err500(req,res);}
                 else{
@@ -167,7 +169,7 @@ function createSQL(command, reqBody){
     let result = ""
 
     switch(command){
-        case "INSERT": result = "INSERT INTO " + reqBody["table"] + forEachSQL(reqBody["attributes"]) + " VALUES" + forEachSQL(reqBody["data"])
+        case "INSERT": result = "INSERT INTO " + reqBody["table"] + forEachSQL(reqBody["attributes"]) + " VALUES" + forEachSQL(reqBody["data"],true)
         break;
         case "SELECT": result = "SELECT * from "  + reqBody["table"] + " WHERE "  + reqBody["condition"] + reqBody["conditionOperation"] + wrapperValue(reqBody["conditionValue"])
         break;
@@ -178,12 +180,15 @@ function createSQL(command, reqBody){
     return result
 }
 
-function forEachSQL(data){
+function forEachSQL(data, option=false){
     let temp = "("
-    data.forEach((element)=>{
-        temp = temp + element + ", "
-    })
-    temp = temp.substring(-1, 2)
+    if(option){
+        try{data.forEach((e)=>{temp = temp+ wrapperValue(e) +", ";})}catch{return}
+    }
+    else{
+        try{data.forEach((e)=>{temp = temp + e +", ";})}catch{return}
+    }
+    temp = temp.slice(0, -2)
     temp = temp + ") "
     return temp;
 }

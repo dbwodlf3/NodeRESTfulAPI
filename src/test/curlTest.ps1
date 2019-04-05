@@ -16,7 +16,10 @@ function test($URI, $Method = "GET", $Header = @{"HTTP"="1.1"}, $Body = @{}, $Ti
 #variables
 $ComputerHost = "http://localhost:8000"
 $BodyPOST = @"
-{ "userName": "user", "password": "user", "email":"user@user"}
+{   
+    "attributes":["userName","password","email"],
+    "data":["user","user","user@user.com"]
+}
 "@
 $BodyPUT = @"
 { "email":"user@changed.com", "password":"1234"}
