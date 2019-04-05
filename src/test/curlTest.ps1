@@ -22,7 +22,9 @@ $BodyPOST = @"
 }
 "@
 $BodyPUT = @"
-{ "email":"user@changed.com", "password":"1234"}
+{   "attributes":["email","password"],
+    "data":["user@changed.com", "1234"]
+}
 "@
 
 #Test Cases

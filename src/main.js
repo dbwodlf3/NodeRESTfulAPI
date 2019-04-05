@@ -49,7 +49,7 @@ function RESTfulAPIRouting(req, res, next){
 function RESTfulGET(req, res, url)
 {   
     let parameter = [getParameter(url, 2),getParameter(url, 3)]
-    let sqlJson = {"table":parameter[0],"condition":["userName"],"conditionValue":parameter[1],"conditionOperation":"="}
+    let sqlJson = {"table":parameter[0],"condition":parameter[0]+"Name","conditionValue":parameter[1],"conditionOperation":"="}
     let sql = createSQL("SELECT", sqlJson)
     myQuery(sql, (err, result)=>
     {
@@ -71,9 +71,7 @@ function RESTfulPOST(req, res, url)
         req.on("data", (chunk)=>{body.push(chunk)}).on('end', ()=> {
             try{body = JSON.parse(Buffer.concat(body).toString("utf-8"))}catch{}
             body["table"] = parameter
-            console.log(body)
             let sql = createSQL("INSERT", body)
-            console.log(sql)
             myQuery(sql, (err, result)=>{
                 if(err){err500(req,res);}
                 else{
@@ -89,32 +87,32 @@ function RESTfulPUT(req, res, url)
 {
     let body = []
     let parameter = [getParameter(url, 2), getParameter(url, 3)]
-    req.on("data", (chunk)=>{ body.push(chunk)}).on('end', ()=>{
-        try{body = JSON.parse(Buffer.concat(body).toString("utf-8"))}catch{}
+    req.on("data", (chunk)=>{body.push(chunk)}).on('end', ()=> {
+        try{body = JSON.parse(Buffer.concat(body).toString("utf-8"))}catch(err){console.log(err);}
 
-        sql = `UPDATE ${parameter[0]} SET `
-        let jsonKeys = Object.keys(body)
-        for(let i=0;i<jsonKeys.length;i++){
-            if(i==jsonKeys.length-1){sql = sql + `${jsonKeys[i]} = \"${body[jsonKeys[i]]}\" `;break;} // 개선의 여지가 무척이나 많은 코드...
-            sql = sql + `${jsonKeys[i]} = \"${body[jsonKeys[i]]}\", `
-        }
-        sql = sql + `WHERE  userName= \"${parameter[1]}\"`; //개선의 여지가 있는 코드.
+        body["table"] = parameter[0]
+        body["condition"] = (parameter[0]+"Name")
+        body["conditionValue"] = parameter[1]
+        let sql = createSQL("UPDATE", body)
 
         myQuery(sql, (err, result)=>{
-            if(err){err500(req,res);console.log(sql); throw err;}
+            if(err){err500(req,res); console.log(err);}
             else{
                 res.writeHead(200, {"Content-Type":"text/plain"})
                 res.write("Updated.")
                 res.end()
             }
         })
+
     })
 }
 
 function RESTfulDELETE(req, res, url)
 {
     let parameter = [getParameter(url, 2), getParameter(url, 3)]
-    let sql = `DELETE from ${parameter[0]} where userName = "${parameter[1]}"` //개선의 여지가 있는 코드
+    let sqlJson = {"table":parameter[0], "condition":(parameter[0]+"Name"), "conditionValue":parameter[1]}
+    let sql = createSQL("DELETE", sqlJson)
+    console.log(sql)
     myQuery(sql, (err, result)=>{
         if(err)err500(req,res);
         else{
@@ -173,8 +171,10 @@ function createSQL(command, reqBody){
         break;
         case "SELECT": result = "SELECT * from "  + reqBody["table"] + " WHERE "  + reqBody["condition"] + reqBody["conditionOperation"] + wrapperValue(reqBody["conditionValue"])
         break;
-        case "UPDATE":break;
-        case "DELETE":break;
+        case "UPDATE": result = "UPDATE " + reqBody["table"] + " SET " + forEachSQL2(reqBody["attributes"], reqBody["data"]) + " WHERE " + reqBody["condition"] + "= " + wrapperValue(reqBody["conditionValue"])
+        break;
+        case "DELETE": result = "DELETE FROM " +  reqBody["table"] + " WHERE " + reqBody["condition"] +"= " + wrapperValue(reqBody["conditionValue"])
+        break;
         default: break;
     }
     return result
@@ -190,6 +190,18 @@ function forEachSQL(data, option=false){
     }
     temp = temp.slice(0, -2)
     temp = temp + ") "
+    return temp;
+}
+
+function forEachSQL2(data1, data2){
+    let temp = ""
+
+    for(let i=0;i<data1.length;i++){
+            temp = temp + data1[i] + "= " + wrapperValue(data2[i]) + ", "
+    }
+
+    temp = temp.slice(0, -2)
+    temp = temp + ""
     return temp;
 }
 
