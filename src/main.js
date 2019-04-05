@@ -48,8 +48,9 @@ function RESTfulAPIRouting(req, res, next){
 //API Function
 function RESTfulGET(req, res, url)
 {   
-    let parameter = getParameter(url, 3)
-    let sql = `SELECT * FROM user where username=\'${parameter}\'`
+    let parameter = [getParameter(url, 2),getParameter(url, 3)]
+    let sqlJson = {"table":parameter[0],"condition":["userName"],"conditionValue":parameter[1],"conditionOperation":"="}
+    let sql = createSQL("SELECT", sqlJson)
     myQuery(sql, (err, result)=>
     {
         try{
@@ -159,6 +160,36 @@ function myQuery(sql, callback){
 
 function getParameter(url, n){
     return url.split("/")[n]
+}
+
+
+function createSQL(command, reqBody){
+    let result = ""
+
+    switch(command){
+        case "INSERT": result = "INSERT INTO " + reqBody["table"] + forEachSQL(reqBody["attributes"]) + " VALUES" + forEachSQL(reqBody["data"])
+        break;
+        case "SELECT": result = "SELECT * from "  + reqBody["table"] + " WHERE "  + reqBody["condition"] + reqBody["conditionOperation"] + wrapperValue(reqBody["conditionValue"])
+        break;
+        case "UPDATE":break;
+        case "DELETE":break;
+        default: break;
+    }
+    return result
+}
+
+function forEachSQL(data){
+    let temp = "("
+    data.forEach((element)=>{
+        temp = temp + element + ", "
+    })
+    temp = temp.substring(-1, 2)
+    temp = temp + ") "
+    return temp;
+}
+
+function wrapperValue(data){
+    return `"${data}"`
 }
 
 
