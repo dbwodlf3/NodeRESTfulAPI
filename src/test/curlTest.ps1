@@ -8,7 +8,7 @@ function test($URI, $Method = "GET", $Header = @{"HTTP"="1.1"}, $Body = @{}, $Ti
     } catch {
         write-host $_
         write-host $Method $URI $_.Exception.Response.statusCode
-        write-Host $_.Exception.Response.COntent
+        write-Host $_.Exception.Response.Content
         write-Host
     }
 }
